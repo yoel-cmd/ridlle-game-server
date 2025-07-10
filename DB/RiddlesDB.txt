@@ -10,59 +10,6 @@
     "name": "Easy Math 2",
     "taskDescription": "What is 10 - 4?",
     "corectAnswer": "6"
-  },
-  {
-    "id": 3,
-    "name": "Easy Math 3",
-    "taskDescription": "What is 7 + 2?",
-    "corectAnswer": "9"
-  },
-  {
-    "id": 4,
-    "name": "Easy Math 4",
-    "taskDescription": "What is 15 - 7?",
-    "corectAnswer": "8"
-  },
-  {
-    "id": 5,
-    "name": "Easy Math 5",
-    "taskDescription": "What is 12 + 5?",
-    "corectAnswer": "17"
-  },
-  {
-    "id": 6,
-    "name": "Easy Math 6",
-    "taskDescription": "What is 20 - 9?",
-    "corectAnswer": "11"
-  },
-  {
-    "id": 7,
-    "name": "Easy Math 7",
-    "taskDescription": "What is 4 + 6?",
-    "corectAnswer": "10"
-  },
-  {
-    "id": 8,
-    "name": "Easy Math 8",
-    "taskDescription": "What is 18 - 5?",
-    "corectAnswer": "13"
-  },
-  {
-    "id": 9,
-    "name": "Easy Math 9",
-    "taskDescription": "What is 9 + 9?",
-    "corectAnswer": "18"
-  },
-  {
-    "id": 10,
-    "name": "Easy Math 10",
-    "taskDescription": "What is 25 - 10?",
-    "corectAnswer": "15"
-  },
-  {
-    "name": "kkk",
-    "taskDescription": "7-6",
-    "corectAnswer": "1",
-    "id": 11
   }
+  
 ]
