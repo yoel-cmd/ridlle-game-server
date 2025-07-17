@@ -1,10 +1,10 @@
 import express from "express"
-import { readFile,writeFile} from "node:fs/promises"
+import { readFile, writeFile } from "node:fs/promises"
+
 const pathRiddle = process.cwd() + '/DB/RiddlesDB.txt';
 const pathPlayer = process.cwd() + '/DB/PlayersDB.txt';
 
 const server = express()
-
 
 server.use(express.json())
 
@@ -22,10 +22,9 @@ server.post('/creat-ridlle', async (req, res) => {
 
     } catch (err) {
         console.log("error", err.message);
-
     }
-
 })
+
 server.post('/creat-palyer', async (req, res) => {
     try {
         const data = await readFile(pathPlayer, 'utf8')
@@ -40,20 +39,16 @@ server.post('/creat-palyer', async (req, res) => {
 
     } catch (err) {
         console.log("error", err.message);
-
     }
 
 })
 server.get('/readRiddle', async (req, res) => {
     const data = await readFile(pathRiddle, 'utf8')
     res.send(data)
-
 })
 
 server.get('/ridlle', (req, res) => {
     console.log('hi from server riddle');
-
 })
-
 
 server.listen(3000, () => console.log('liste........'))
