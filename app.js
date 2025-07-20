@@ -1,8 +1,12 @@
 import express from "express"
-import { readFile, writeFile } from "node:fs/promises"
+// import { readFile, writeFile } from "node:fs/promises"
+import { connectToMongoDB } from "./DB/mongo_DB.js"
+import {readRiddle,} from "./DAL/riddle.DAL.js"
+
 
 const pathRiddle = process.cwd() + '/DB/RiddlesDB.txt';
 const pathPlayer = process.cwd() + '/DB/PlayersDB.txt';
+
 
 const server = express()
 
@@ -10,7 +14,7 @@ server.use(express.json())
 
 server.post('/creat-ridlle', async (req, res) => {
     try {
-        const data = await readFile(pathRiddle, 'utf8')
+        const data = await creatRiddle()
         const jsData = JSON.parse(data)
 
         req.body.id = jsData.length === 0 ? 1 : jsData[jsData.length - 1].id + 1;
@@ -43,12 +47,16 @@ server.post('/creat-palyer', async (req, res) => {
 
 })
 server.get('/readRiddle', async (req, res) => {
-    const data = await readFile(pathRiddle, 'utf8')
+    const data = await readRiddle()
     res.send(data)
 })
 
 server.get('/ridlle', (req, res) => {
     console.log('hi from server riddle');
 })
+
+await connectToMongoDB()
+
+
 
 server.listen(3000, () => console.log('liste........'))
