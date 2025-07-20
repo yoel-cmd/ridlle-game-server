@@ -1,9 +1,9 @@
-import { mongoClient} from '../DB/mongo_DB.js'
+import { mongoClient } from '../DB/mongo_DB.js'
 
 export async function creatRiddle(riddle) {
     try {
-        const result = await mongoClient.db('riddle_project').collection("riddles").insertOne(riddle);
-        return (`Inserted document with _id: ${result.insertedId}`);
+        await mongoClient.db('riddle_project').collection("riddles").insertOne(riddle);
+        return ({ "message": "adding" });
     } catch (error) {
         return error;
     }
