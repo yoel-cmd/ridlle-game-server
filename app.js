@@ -1,11 +1,8 @@
 import express from "express"
 // import { readFile, writeFile } from "node:fs/promises"
 import { connectToMongoDB } from "./DB/mongo_DB.js"
-import { readRiddle, creatRiddle } from "./DAL/riddle.DAL.js"
+import { readRiddle, creatRiddle,deleteRiddle } from "./DAL/riddle.DAL.js"
 
-
-const pathRiddle = process.cwd() + '/DB/RiddlesDB.txt';
-const pathPlayer = process.cwd() + '/DB/PlayersDB.txt';
 
 
 const server = express()
@@ -15,6 +12,16 @@ server.use(express.json())
 server.post('/create-ridlle', async (req, res) => {
     try {
         const val = await creatRiddle(req.body);
+        console.log(val); 
+        res.status(201).send(val);
+    } catch (err) {
+        console.log("error", err.message);
+    }
+})
+
+server.delete('/delete-riddle/:id', async (req, res) => {
+    try {
+        const val = await deleteRiddle(req.params.id);
         console.log(val); 
         res.status(201).send(val);
     } catch (err) {
