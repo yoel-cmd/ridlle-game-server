@@ -56,13 +56,9 @@ await connectToMongoDB()
 
 server.post('/create-palyer', async (req, res) => {
     try {
-        const data = await readFile(pathPlayer, 'utf8')
-        const jsData = JSON.parse(data)
+       const data=await
 
-        req.body.id = jsData.length === 0 ? 1 : jsData[jsData.length - 1].id + 1;
-        jsData.push(req.body)
-
-        await writeFile(pathPlayer, JSON.stringify(jsData, null, 2))
+       
 
         res.status(201).json({ id: req.body.id })
 
