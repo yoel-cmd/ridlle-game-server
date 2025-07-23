@@ -1,14 +1,14 @@
 import { supabase } from "../DB/supa_DB.js";
 
-// export async function loadRecord() {
-//     const { data, error } = await supabase.from("player").select("*")
+export async function loadRecord() {
+    const { data, error } = await supabase.from("player").select("*")
 
-//     if (error) {
-//         console.error('error:', error)
-//     } else {
-//         console.log('data:', data)
-//     }
-// }
+    if (error) {
+        console.error('error:', error)
+    } else {
+        console.log('data:', data)
+    }
+}
 
 export async function addPlayer(player) {
     const { data, error } = await supabase.from("player").insert(player);
@@ -20,7 +20,7 @@ export async function addPlayer(player) {
 }
 
 
-export async function update(name, property, value) {
+export async function updatePlayer(name, property, value) {
     const { data, error } = await supabase.from('player').update({ [property]: value }).eq('name', name)
     if (error) throw new Error(error.message)
     return "update"
@@ -28,13 +28,7 @@ export async function update(name, property, value) {
 }
 
 
-const player = {
-    name: "yoyo",
-    avg: 3,
-    record: 4
-};
 
-const val= await update("yoyo", "record", 3)
-console.log(val);
+
 
 
