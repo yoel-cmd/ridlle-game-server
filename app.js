@@ -56,7 +56,7 @@ await connectToMongoDB()
 
 server.post('/create-palyer', async (req, res) => {
     try {
-       const data=await
+       
 
        
 
