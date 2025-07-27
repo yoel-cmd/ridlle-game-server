@@ -1,10 +1,9 @@
-//-------------------------------------------
 import express from "express"
-// import { readFile, writeFile } from "node:fs/promises"
+import bcrypt from 'bcrypt'
 import { connectToMongoDB } from "./DB/mongo_DB.js"
 import { readRiddle, creatRiddle, deleteRiddle, updateRiddle } from "./DAL/riddle.DAL.js"
-import { addPlayer, loadAllPlayer, loadPlayerByNmae,updatePlayer,loadAllPlayersByRecord } from "./DAL/player.DAL.js"
-
+import { addPlayer, loadAllPlayer, loadPlayerByNmae, updatePlayer, loadAllPlayersByRecord, loadPassByName } from "./DAL/player.DAL.js"
+import jwt from 'jsonwebtoken'
 const server = express()
 
 server.use(express.json())
@@ -51,17 +50,7 @@ server.put('/update-riddle/:id', async (req, res) => {
         console.log("error", error.message);
     }
 })
-//--------------------create player----------------
-server.post('/create-palyer', async (req, res) => {
-    try {
-        const data = await addPlayer(req.body)
-        console.log(data);
-        res.status(201).json(data)
-    } catch (err) {
-        console.log("error", err.message);
-    }
 
-})
 //---------------load all player----------------
 server.get('/load-player', async (req, res) => {
     try {
@@ -95,8 +84,8 @@ server.get('/check-player/:name', async (req, res) => {
 //---------------update player----------------
 server.post('/update-record', async (req, res) => {
     try {
-        const { name, property, value } = req.body; 
-        const data = await updatePlayer(name, property, value); 
+        const { name, property, value } = req.body;
+        const data = await updatePlayer(name, property, value);
         res.status(201).send(data);
     } catch (error) {
         console.log("error", error.message);
@@ -115,6 +104,60 @@ server.get("/players-by-record", async (req, res) => {
         res.status(500).send("error !! ");
     }
 });
+//---------------Singig ----------------
+
+server.post('/siging', async (req, res) => {
+    try {
+        const passhash = await bcrypt.hash(req.body.password, 10)
+        const data = await addPlayer({
+            name: req.body.name,
+            avg: req.body.avg,
+            record: req.body.record,
+            password: passhash,
+            rol: 'user'
+        });
+        const token = jwt.sign({
+            nam: req.body.name,
+            rol: req.body.rol,
+        },
+            process.env.SECRETE_KEY,
+            { expiresIn: '7h' }
+        )
+        console.log(token);
+
+        res.status(201).json(token)
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+//---------------Login ----------------
+
+server.post('/login', async (req, res) => {
+    try {
+        console.log(req.body);
+
+        const passDB = await loadPassByName(req.body.name)
+        // console.log(passDB);
+
+        const ifPassword = await bcrypt.compare(req.body.password, passDB.password)
+        console.log(ifPassword);
+        if (ifPassword) {
+            const token = jwt.sign({
+                nam: req.body.name,
+                rol: req.body.rol,
+            },
+                process.env.SECRETE_KEY,
+                { expiresIn: '7h' }
+            )
+            
+            res.json({ nsg: 'User found' })
+        }
+    } catch (error) {
+        res.send(error, 'User not found')
+    }
+
+})
 
 
 
