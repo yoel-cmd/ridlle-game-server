@@ -32,9 +32,8 @@ export async function loadPlayerByNmae(name) {
 //         return data.record === record
 //     }
 // }
-//-------------------add playr to DB---------------------------------------
+//-------------------create playr ---------------------------------------
 export async function addPlayer(player) {
-    console.log(player)
     const { data, error } = await supabase.from("player").insert(player).select().single();
     if (error) {
         console.error('error:', error)
@@ -57,7 +56,7 @@ export async function loadAllPlayersByRecord() {
     const { data, error } = await supabase
         .from("player")
         .select("*")
-        .order("record", { ascending: true }); 
+        .order("record", { ascending: true });
     if (error) {
         console.error("error:", error.message);
         throw error;
@@ -66,5 +65,21 @@ export async function loadAllPlayersByRecord() {
 }
 
 
+//--------------------Login----------------------------------
+export async function loadPassByName(name) {
+    const { data, error } = await supabase.from("player").select("*").eq("name", name)
+
+
+    if (error) {
+        console.error('error:', error)
+    }
+    if (!data || data.length === 0) {
+
+        return 'User not exsist';
+
+    }
+    return data[0]
+
+}
 
 
