@@ -7,11 +7,14 @@ import jwt from 'jsonwebtoken'
 const server = express()
 
 
+
 const allowedOrigins = [
   "http://localhost:5173",                  // פיתוח מקומי
   "http://localhost:4173",                  // לפעמים Vite יושב על פורט הזה
   "https://riddles-clinte.netlify.app",     // הקליינט ב-Netlify
 ];
+server.use(express.json());
+
 
 server.use((req, res, next) => {
   const origin = req.headers.origin;
