@@ -58,15 +58,7 @@ server.use((req, res, next) => {
 
 //-------------create riddle-----------------------
 
-// server.post('/create-ridlle', async (req, res) => {
-//     try {
-//         const val = await creatRiddle(req.body);
-//         console.log(val);
-//         res.status(201).send(val);
-//     } catch (err) {
-//         console.log("error", err.message);
-//     }
-// })
+
 
 server.post('/create-ridlle', authMiddleware(["user", "admin"]), async (req, res) => {
   const val = await creatRiddle(req.body);
@@ -75,15 +67,7 @@ server.post('/create-ridlle', authMiddleware(["user", "admin"]), async (req, res
 
 //-------------delete riddle-----------------------
 
-// server.delete('/delete-riddle/:id', async (req, res) => {
-//     try {
-//         const val = await deleteRiddle(req.params.id);
-//         console.log(val);
-//         res.status(201).send(val);
-//     } catch (err) {
-//         console.log("error", err.message);
-//     }
-// })
+
 
 server.delete('/delete-riddle/:id', authMiddleware(["admin"]), async (req, res) => {
   const val = await deleteRiddle(req.params.id);
@@ -92,12 +76,6 @@ server.delete('/delete-riddle/:id', authMiddleware(["admin"]), async (req, res) 
 
 //-------------read riddle-----------------------
 
-// server.get('/readRiddle', async (req, res) => {
-  
-    
-//     const data = await readRiddle()
-//     res.send(data)
-// })
 server.get('/readRiddle', authMiddleware(["user", "admin"]), async (req, res) => {
   const data = await readRiddle();
   res.send(data);
@@ -105,14 +83,7 @@ server.get('/readRiddle', authMiddleware(["user", "admin"]), async (req, res) =>
 
 //-------------update riddle-----------------------
 
-// server.put('/update-riddle/:id', async (req, res) => {
-//     try {
-//         const data = await updateRiddle(req.params.id, req.body)
-//         res.send(data)
-//     } catch (error) {
-//         console.log("error", error.message);
-//     }
-// })
+
 
 server.put('/update-riddle/:id', authMiddleware(["admin"]), async (req, res) => {
   const data = await updateRiddle(req.params.id, req.body);
