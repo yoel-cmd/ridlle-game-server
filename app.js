@@ -6,10 +6,11 @@ import { addPlayer, loadAllPlayer, loadPlayerByNmae, updatePlayer, loadAllPlayer
 import jwt from 'jsonwebtoken'
 const server = express()
 
-server.use(express.json())
+
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://riddles-clinte.netlify.app"
+  "http://localhost:5173",                  // פיתוח מקומי
+  "http://localhost:4173",                  // לפעמים Vite יושב על פורט הזה
+  "https://riddles-clinte.netlify.app",     // הקליינט ב-Netlify
 ];
 
 server.use((req, res, next) => {
@@ -17,16 +18,15 @@ server.use((req, res, next) => {
   if (allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
   }
-
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
-
   next();
 });
+
 
 
 //-------------create riddle-----------------------
