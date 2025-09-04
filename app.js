@@ -7,6 +7,26 @@ import jwt from 'jsonwebtoken'
 const server = express()
 
 server.use(express.json())
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://riddles-clinte.netlify.app"
+];
+
+server.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 
 //-------------create riddle-----------------------
@@ -36,6 +56,8 @@ server.delete('/delete-riddle/:id', async (req, res) => {
 //-------------read riddle-----------------------
 
 server.get('/readRiddle', async (req, res) => {
+  
+    
     const data = await readRiddle()
     res.send(data)
 })
@@ -109,55 +131,60 @@ server.get("/players-by-record", async (req, res) => {
 server.post('/siging', async (req, res) => {
     try {
         const passhash = await bcrypt.hash(req.body.password, 10)
+
         const data = await addPlayer({
             name: req.body.name,
             avg: req.body.avg,
             record: req.body.record,
             password: passhash,
-            rol: 'user'
+            role: 'user'
         });
+        console.log("📦 addPlayer result:", data)
+        
+        
         const token = jwt.sign({
-            nam: req.body.name,
-            rol: req.body.rol,
+            name: data.name,
+            role: data.role,
         },
             process.env.SECRETE_KEY,
             { expiresIn: '7h' }
         )
-        console.log(token);
-
         res.status(201).json(token)
+
     } catch (error) {
-        res.send(error)
+       return res.status(404).send("Error in signing" + error.message);
     }
 })
 
 //---------------Login ----------------
 
 server.post('/login', async (req, res) => {
-    try {
-        console.log(req.body);
+  try {
+    const passDB = await loadPassByName(req.body.name);
+    const ifPassword = await bcrypt.compare(req.body.password, passDB.password);
 
-        const passDB = await loadPassByName(req.body.name)
-        // console.log(passDB);
+    if (ifPassword) {
+      const payload = {
+        name: req.body.name,
+        role: req.body.role, 
+      };
 
-        const ifPassword = await bcrypt.compare(req.body.password, passDB.password)
-        console.log(ifPassword);
-        if (ifPassword) {
-            const token = jwt.sign({
-                nam: req.body.name,
-                rol: req.body.rol,
-            },
-                process.env.SECRETE_KEY,
-                { expiresIn: '7h' }
-            )
-            
-            res.json({ nsg: 'User found' })
-        }
-    } catch (error) {
-        res.send(error, 'User not found')
+      const token = jwt.sign(
+        payload,
+        process.env.SECRETE_KEY,
+        { expiresIn: '7h' }
+      );
+      return res.status(201).json(token);
+    } else {
+      console.log(" Password mismatch for user:", req.body.name);
+      return res.status(401).send("User or Password incorrect");
     }
-
-})
+  } catch (error) {
+    console.error(" Error in /login:", error);
+    return res.status(404).send("User not found");
+  }
+});
+//---------------connect to DB and listen ----------------
 
 
 
