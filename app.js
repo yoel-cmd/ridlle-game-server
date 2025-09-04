@@ -15,6 +15,30 @@ const allowedOrigins = [
 ];
 server.use(express.json());
 
+function authMiddleware(allowedRoles = []) {
+  return (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).send("No token provided");
+    }
+
+    const token = authHeader.split(" ")[1];
+    try {
+      const payload = jwt.verify(token, process.env.SECRETE_KEY);
+      req.user = payload;
+
+      // אם אין דרישה ספציפית ל-role, כל מי שמחובר עובר
+      if (allowedRoles.length && !allowedRoles.includes(payload.role)) {
+        return res.status(403).send("Forbidden");
+      }
+
+      next();
+    } catch (err) {
+      return res.status(401).send("Invalid token");
+    }
+  };
+}
+
 
 server.use((req, res, next) => {
   const origin = req.headers.origin;
@@ -34,47 +58,66 @@ server.use((req, res, next) => {
 
 //-------------create riddle-----------------------
 
-server.post('/create-ridlle', async (req, res) => {
-    try {
-        const val = await creatRiddle(req.body);
-        console.log(val);
-        res.status(201).send(val);
-    } catch (err) {
-        console.log("error", err.message);
-    }
-})
+// server.post('/create-ridlle', async (req, res) => {
+//     try {
+//         const val = await creatRiddle(req.body);
+//         console.log(val);
+//         res.status(201).send(val);
+//     } catch (err) {
+//         console.log("error", err.message);
+//     }
+// })
+
+server.post('/create-ridlle', authMiddleware(["user", "admin"]), async (req, res) => {
+  const val = await creatRiddle(req.body);
+  res.status(201).send(val);
+});
 
 //-------------delete riddle-----------------------
 
-server.delete('/delete-riddle/:id', async (req, res) => {
-    try {
-        const val = await deleteRiddle(req.params.id);
-        console.log(val);
-        res.status(201).send(val);
-    } catch (err) {
-        console.log("error", err.message);
-    }
-})
+// server.delete('/delete-riddle/:id', async (req, res) => {
+//     try {
+//         const val = await deleteRiddle(req.params.id);
+//         console.log(val);
+//         res.status(201).send(val);
+//     } catch (err) {
+//         console.log("error", err.message);
+//     }
+// })
+
+server.delete('/delete-riddle/:id', authMiddleware(["admin"]), async (req, res) => {
+  const val = await deleteRiddle(req.params.id);
+  res.status(201).send(val);
+});
 
 //-------------read riddle-----------------------
 
-server.get('/readRiddle', async (req, res) => {
+// server.get('/readRiddle', async (req, res) => {
   
     
-    const data = await readRiddle()
-    res.send(data)
-})
+//     const data = await readRiddle()
+//     res.send(data)
+// })
+server.get('/readRiddle', authMiddleware(["user", "admin"]), async (req, res) => {
+  const data = await readRiddle();
+  res.send(data);
+});
 
 //-------------update riddle-----------------------
 
-server.put('/update-riddle/:id', async (req, res) => {
-    try {
-        const data = await updateRiddle(req.params.id, req.body)
-        res.send(data)
-    } catch (error) {
-        console.log("error", error.message);
-    }
-})
+// server.put('/update-riddle/:id', async (req, res) => {
+//     try {
+//         const data = await updateRiddle(req.params.id, req.body)
+//         res.send(data)
+//     } catch (error) {
+//         console.log("error", error.message);
+//     }
+// })
+
+server.put('/update-riddle/:id', authMiddleware(["admin"]), async (req, res) => {
+  const data = await updateRiddle(req.params.id, req.body);
+  res.send(data);
+});
 
 //---------------load all player----------------
 server.get('/load-player', async (req, res) => {
@@ -168,8 +211,8 @@ server.post('/login', async (req, res) => {
 
     if (ifPassword) {
       const payload = {
-        name: req.body.name,
-        role: req.body.role, 
+        name: passDB.name,
+        role: passDB.role, 
       };
 
       const token = jwt.sign(
