@@ -2,11 +2,11 @@
 PORT=3000
 
 # סוד ליצירת JWT (בהמשך נוסיף אימות)
-JWT_SECRET=superSecretKey123
+JWT_SECRET=your-random-secret
 
 # חיבור ל-Supabase (נשתמש כשנעבור ל-DB אמיתי)
-SUPABASE_URL=https://ebpblbglrqypymaleaoy.supabase.co
-SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicGJsYmdscnF5cHltYWxlYW95Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MjU2ODU1MywiZXhwIjoyMDY4MTQ0NTUzfQ.DQmI1aG2ySfSCeS6SxWg27S0iwChpUprA4q-DGa78oA
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-service-role-key
 
 🛠️ Server Side - Riddle Game
 This is the server side of the system. It includes:
